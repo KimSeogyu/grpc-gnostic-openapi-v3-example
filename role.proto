@@ -5,6 +5,17 @@ option go_package = "github.com/KimSeogyu/grpc-gnostic-openapi-v3-example/rolema
 import "google/api/annotations.proto";
 import "openapiv3/annotations.proto";
 
+option (openapi.v3.document) = {
+  info: {
+    title: "RoleManager API Document";
+    version: "1.0";
+    description: "This is RoleManager API Document";
+  }
+  servers: [
+    {url: "http://localhost:8080"}
+  ]
+};
+
 service RoleManager {
   rpc CreateRole(CreateRole.Request) returns (CreateRole.Response) {
     option (google.api.http) = {
