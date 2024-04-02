@@ -7,9 +7,9 @@ import "openapiv3/annotations.proto";
 
 option (openapi.v3.document) = {
   info: {
-    title: "RoleManager API Document";
+    title: "Open API Document";
     version: "1.0";
-    description: "This is RoleManager API Document";
+    description: "This is a sample OpenAPI document.";
   }
   servers: [
     {url: "http://localhost:8080"}
