@@ -61,14 +61,16 @@ func main() {
 		errCh <- http.ListenAndServe(":8080", mux)
 	}()
 
-	url := "http://localhost:8080/openapi"
-	if runtime.GOOS == "darwin" {
-		cmd := exec.Command("open", url)
-		cmd.Start()
-	} else {
-		// 다른 운영 체제에서는 표준 출력으로 URL을 출력하고 사용자가 수동으로 열도록 유도할 수 있음
-		println("Please open your browser and go to:", url)
-	}
+	go func() {
+		url := "http://localhost:8080/openapi"
+		if runtime.GOOS == "darwin" {
+			cmd := exec.Command("open", url)
+			cmd.Start()
+		} else {
+			// 다른 운영 체제에서는 표준 출력으로 URL을 출력하고 사용자가 수동으로 열도록 유도할 수 있음
+			println("Please open your browser and go to:", url)
+		}
+	}()
 	<-errCh
 	log.Fatal("server stopped")
 }
