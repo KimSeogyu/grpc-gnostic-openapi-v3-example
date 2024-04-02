@@ -51,7 +51,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/openapi", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(FromYaml("gen/openapi.yaml")))
+		w.Write([]byte(fromYaml("gen/openapi.yaml")))
 	})
 	mux.Handle("/", gatewayMux)
 
@@ -75,8 +75,8 @@ func main() {
 	log.Fatal("server stopped")
 }
 
-// FromYaml reads a json file from srcPath and stores it in the generator
-func FromYaml(srcPath string) string {
+// fromYaml reads a yaml file from srcPath and returns a string of html code that displays the swagger ui
+func fromYaml(srcPath string) string {
 	// check if srcPath exists
 	if _, err := os.Stat(srcPath); os.IsNotExist(err) {
 		log.Fatal(err)
