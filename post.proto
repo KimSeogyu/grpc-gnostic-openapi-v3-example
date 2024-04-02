@@ -1,23 +1,23 @@
 syntax = "proto3";
 
-package rolemanagerpb;
-option go_package = "./rolemanagerpb";
+package postpb;
+option go_package = "./postpb";
 import "google/api/annotations.proto";
 import "openapiv3/annotations.proto";
 
-service RoleManager {
-  rpc CreateRole(CreateRole.Request) returns (CreateRole.Response) {
+service Post {
+  rpc CreatePost(CreatePost.Request) returns (CreatePost.Response) {
     option (google.api.http) = {
-      post: "/role"
+      post: "/post"
       body: "*"
     };
   };
 }
 
-message CreateRole {
+message CreatePost {
   option (openapi.v3.schema) = {
-    title: "CreateRole"
-    description: "CreateRole"
+    title: "CreatePost"
+    description: "CreatePost"
   };
 
   message Request {

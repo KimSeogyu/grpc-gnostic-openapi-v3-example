@@ -1,4 +1,4 @@
-module grpc-gnostic-openapi-v3-example
+module github.com/KimSeogyu/grpc-gnostic-openapi-v3-example
 
 go 1.22.1
 

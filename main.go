@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/KimSeogyu/grpc-gnostic-openapi-v3-example/gen/postpb"
+	"github.com/KimSeogyu/grpc-gnostic-openapi-v3-example/gen/rolemanagerpb"
 	"github.com/ghodss/yaml"
 	grpcRuntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
-	rolemanager "grpc-gnostic-openapi-v3-example/gen"
 	"log"
 	"net"
 	"net/http"
@@ -17,11 +18,16 @@ import (
 )
 
 type Service struct {
-	rolemanager.UnimplementedRoleManagerServer
+	rolemanagerpb.UnimplementedRoleManagerServer
+	postpb.UnimplementedPostServer
 }
 
-func (s *Service) CreateRole(ctx context.Context, in *rolemanager.CreateRole_Request) (*rolemanager.CreateRole_Response, error) {
-	return &rolemanager.CreateRole_Response{SampleBodyField: "hello world!"}, nil
+func (s *Service) CreateRole(ctx context.Context, in *rolemanagerpb.CreateRole_Request) (*rolemanagerpb.CreateRole_Response, error) {
+	return &rolemanagerpb.CreateRole_Response{SampleBodyField: "hello world!"}, nil
+}
+
+func (s *Service) CreatePost(ctx context.Context, in *postpb.CreatePost_Request) (*postpb.CreatePost_Response, error) {
+	return &postpb.CreatePost_Response{SampleBodyField: "hello world!"}, nil
 }
 
 func main() {
@@ -37,14 +43,21 @@ func main() {
 		}
 	}()
 
-	rolemanager.RegisterRoleManagerServer(server, &Service{})
+	rolemanagerpb.RegisterRoleManagerServer(server, &Service{})
+	postpb.RegisterPostServer(server, &Service{})
 
 	conn, err := grpc.DialContext(context.Background(), "localhost:9090", grpc.WithInsecure())
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	gatewayMux := grpcRuntime.NewServeMux()
-	err = rolemanager.RegisterRoleManagerHandler(context.Background(), gatewayMux, conn)
+	err = rolemanagerpb.RegisterRoleManagerHandler(context.Background(), gatewayMux, conn)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = postpb.RegisterPostHandler(context.Background(), gatewayMux, conn)
 	if err != nil {
 		log.Fatal(err)
 	}
