@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package rolemanager;
+option go_package = "github.com/KimSeogyu/grpc-gnostic-openapi-v3-example/rolemanager";
+import "google/api/annotations.proto";
+import "openapiv3/annotations.proto";
+
+service RoleManager {
+  rpc CreateRole(CreateRole.Request) returns (CreateRole.Response) {
+    option (google.api.http) = {
+      post: "/role"
+      body: "*"
+    };
+  };
+}
+
+message CreateRole {
+  option (openapi.v3.schema) = {
+    title: "CreateRole"
+    description: "CreateRole"
+  };
+
+  message Request {
+    string sampleBodyField = 1 [
+      (openapi.v3.property) = {
+        description: "sample body field",
+        nullable: false,
+        example: {
+          yaml: "sample body field",
+        }
+      }
+    ];
+  }
+
+  message Response {
+    string sampleBodyField = 1 [
+      (openapi.v3.property) = {
+        description: "sample body field",
+        nullable: false,
+        example: {
+          yaml: "sample body field",
+        }
+      }
+    ];
+  }
+}

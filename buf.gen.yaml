@@ -1,0 +1,19 @@
+version: v1
+
+plugins:
+  - name: go
+    out: ./gen
+    opt:
+      - paths=source_relative
+  - name: go-grpc
+    out: ./gen
+    opt:
+      - paths=source_relative
+  - name: grpc-gateway
+    out: ./gen
+    opt:
+      - paths=source_relative
+  - plugin: buf.build/community/google-gnostic-openapi:v0.7.0
+    out: ./gen
+    opt:
+      - paths=source_relative
