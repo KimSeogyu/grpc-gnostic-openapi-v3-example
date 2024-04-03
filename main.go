@@ -6,7 +6,7 @@ import (
 	"github.com/KimSeogyu/grpc-gnostic-openapi-v3-example/gen/postpb"
 	"github.com/KimSeogyu/grpc-gnostic-openapi-v3-example/gen/rolemanagerpb"
 	"github.com/ghodss/yaml"
-	grpcRuntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
+	grpcRuntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"log"
 	"net"
