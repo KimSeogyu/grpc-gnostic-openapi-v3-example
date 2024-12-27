@@ -1,9 +1,9 @@
 syntax = "proto3";
 
 package postpb;
-option go_package = "github.com/KimSeogyu/grpc-gnostic-openapi-v3-example/gen/postpb";
+
 import "google/api/annotations.proto";
-import "openapiv3/annotations.proto";
+import "gnostic/openapi/v3/annotations.proto";
 
 service Post {
   rpc CreatePost(CreatePost.Request) returns (CreatePost.Response) {
@@ -15,14 +15,14 @@ service Post {
 }
 
 message CreatePost {
-  option (openapi.v3.schema) = {
+  option (gnostic.openapi.v3.schema) = {
     title: "CreatePost"
     description: "CreatePost"
   };
 
   message Request {
     string sampleBodyField = 1 [
-      (openapi.v3.property) = {
+      (gnostic.openapi.v3.property) = {
         description: "sample body field",
         nullable: false,
         example: {
@@ -34,7 +34,7 @@ message CreatePost {
 
   message Response {
     string sampleBodyField = 1 [
-      (openapi.v3.property) = {
+      (gnostic.openapi.v3.property) = {
         description: "sample body field",
         nullable: false,
         example: {

@@ -1,17 +1,25 @@
-version: v1
-
+version: v2
+managed:
+  enabled: true
+  disable:
+    - module: buf.build/googleapis/googleapis
+    - module: buf.build/grpc-ecosystem/grpc-gateway
+    - module: buf.build/gnostic/gnostic
+  override:
+    - file_option: go_package_prefix
+      value: github.com/KimSeogyu/grpc-gnostic-openapi-v3-example/internal/proto
 plugins:
-  - name: go
-    out: ./gen
+  - remote: buf.build/protocolbuffers/go:v1.31.0
+    out: internal/proto
+    opt: paths=source_relative
+  - remote: buf.build/grpc/go:v1.3.0
+    out: internal/proto
+    opt: paths=source_relative
+  - remote: buf.build/grpc-ecosystem/gateway:v2.16.2
+    out: internal/proto/gateway
     opt:
       - paths=source_relative
-  - name: go-grpc
-    out: ./gen
-    opt:
-      - paths=source_relative
-  - name: grpc-gateway
-    out: ./gen
-    opt:
-      - paths=source_relative
-  - plugin: buf.build/community/google-gnostic-openapi:v0.7.0
-    out: ./gen
+      - standalone=true
+  - remote: buf.build/community/google-gnostic-openapi:v0.7.0
+    out: ./docs
+    opt: paths=source_relative

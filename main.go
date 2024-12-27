@@ -2,19 +2,21 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"github.com/KimSeogyu/grpc-gnostic-openapi-v3-example/gen/postpb"
-	"github.com/KimSeogyu/grpc-gnostic-openapi-v3-example/gen/rolemanagerpb"
-	"github.com/ghodss/yaml"
-	grpcRuntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"google.golang.org/grpc"
+	"io/fs"
 	"log"
 	"net"
 	"net/http"
-	"os"
 	"os/exec"
-	"path/filepath"
 	"runtime"
+
+	openapi "github.com/KimSeogyu/grpc-gnostic-openapi-v3-example/docs"
+	grpcRuntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc"
+
+	postgwpb "github.com/KimSeogyu/grpc-gnostic-openapi-v3-example/internal/proto/gateway/postpb"
+	rolemanagergwpb "github.com/KimSeogyu/grpc-gnostic-openapi-v3-example/internal/proto/gateway/rolemanagerpb"
+	"github.com/KimSeogyu/grpc-gnostic-openapi-v3-example/internal/proto/postpb"
+	"github.com/KimSeogyu/grpc-gnostic-openapi-v3-example/internal/proto/rolemanagerpb"
 )
 
 type Service struct {
@@ -52,20 +54,29 @@ func main() {
 	}
 
 	gatewayMux := grpcRuntime.NewServeMux()
-	err = rolemanagerpb.RegisterRoleManagerHandler(context.Background(), gatewayMux, conn)
+	err = rolemanagergwpb.RegisterRoleManagerHandler(context.Background(), gatewayMux, conn)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = postpb.RegisterPostHandler(context.Background(), gatewayMux, conn)
+	err = postgwpb.RegisterPostHandler(context.Background(), gatewayMux, conn)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	serveFileFS := func(w http.ResponseWriter, r *http.Request, fsys fs.FS, name string) {
+		fs := http.FileServer(http.FS(fsys))
+		r.URL.Path = name
+		fs.ServeHTTP(w, r)
+	}
+	err = gatewayMux.HandlePath("GET", "/spec", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+		serveFileFS(w, r, openapi.StaticFiles, "spec.html")
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/openapi", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(fromYaml("gen/openapi.yaml")))
-	})
 	mux.Handle("/", gatewayMux)
 
 	errCh := make(chan error, 1)
@@ -75,7 +86,7 @@ func main() {
 	}()
 
 	go func() {
-		url := "http://localhost:8080/openapi"
+		url := "http://localhost:8080/spec"
 		if runtime.GOOS == "darwin" {
 			cmd := exec.Command("open", url)
 			cmd.Start()
@@ -86,76 +97,4 @@ func main() {
 	}()
 	<-errCh
 	log.Fatal("server stopped")
-}
-
-// fromYaml reads a yaml file from srcPath and returns a string of html code that displays the swagger ui
-func fromYaml(srcPath string) string {
-	// check if srcPath exists
-	if _, err := os.Stat(srcPath); os.IsNotExist(err) {
-		log.Fatal(err)
-	}
-
-	// check if src is a json file
-	if filepath.Ext(srcPath) != ".yaml" {
-		log.Fatal("srcPath is not a yaml file")
-	}
-
-	// read file from srcPath
-	file, err := os.ReadFile(srcPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	json, err := yaml.YAMLToJSON(file)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	code := fmt.Sprintf(`
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Swagger UI</title>
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@latest/swagger-ui.css">
-    <style>
-        html {
-            box-sizing: border-box;
-            overflow: -moz-scrollbars-vertical;
-            overflow-y: scroll;
-        }
-        *,
-        *:before,
-        *:after {
-            box-sizing: inherit;
-        }
-        body {
-            margin: 0;
-            background: #fafafa;
-        }
-    </style>
-</head>
-<body>
-<div id="swagger-ui"></div>
-<script src="https://unpkg.com/swagger-ui-dist@latest/swagger-ui-bundle.js"></script>
-<script src="https://unpkg.com/swagger-ui-dist@latest/swagger-ui-standalone-preset.js"></script>
-<script>
-    window.onload = function() {
-        window.ui = SwaggerUIBundle({
-	        spec: %s,
-            dom_id: '#swagger-ui',
-            presets: [
-                SwaggerUIBundle.presets.apis,
-                SwaggerUIStandalonePreset
-            ],
-            layout: "StandaloneLayout",
-            deepLinking: true
-        });
-    };
-</script>
-</body>
-</html>
-`, string(json))
-
-	return code
 }

@@ -1,6 +1,6 @@
 module github.com/KimSeogyu/grpc-gnostic-openapi-v3-example
 
-go 1.22.1
+go 1.23.4
 
 require (
 	github.com/ghodss/yaml v1.0.0

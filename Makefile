@@ -1,7 +1,9 @@
 all: buf go
 
 buf:
-	@buf generate --exclude-path google,openapiv3
+	@buf dep update
+	@buf generate
+	@npx @redocly/cli build-docs docs/openapi.yaml -o ./docs/spec.html
 
 go:
 	@go run main.go
