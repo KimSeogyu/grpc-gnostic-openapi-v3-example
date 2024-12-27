@@ -69,6 +69,9 @@ func main() {
 		r.URL.Path = name
 		fs.ServeHTTP(w, r)
 	}
+	err = gatewayMux.HandlePath("GET", "/openapi.yaml", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+		serveFileFS(w, r, openapi.StaticFiles, "openapi.yaml")
+	})
 	err = gatewayMux.HandlePath("GET", "/spec", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 		serveFileFS(w, r, openapi.StaticFiles, "spec.html")
 	})
