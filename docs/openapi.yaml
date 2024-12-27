@@ -12,13 +12,13 @@ paths:
     /post:
         post:
             tags:
-                - Post
-            operationId: Post_CreatePost
+                - V1PostService
+            operationId: V1PostService_CreatePost
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/CreatePost_Request'
+                            $ref: '#/components/schemas/CreatePostRequest'
                 required: true
             responses:
                 "200":
@@ -26,7 +26,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreatePost_Response'
+                                $ref: '#/components/schemas/CreatePostResponse'
                 default:
                     description: Default error response
                     content:
@@ -36,13 +36,13 @@ paths:
     /role:
         post:
             tags:
-                - RoleManager
-            operationId: RoleManager_CreateRole
+                - V1RoleManagerService
+            operationId: V1RoleManagerService_CreateRole
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/CreateRole_Request'
+                            $ref: '#/components/schemas/CreateRoleRequest'
                 required: true
             responses:
                 "200":
@@ -50,7 +50,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreateRole_Response'
+                                $ref: '#/components/schemas/CreateRoleResponse'
                 default:
                     description: Default error response
                     content:
@@ -59,34 +59,42 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        CreatePost_Request:
+        CreatePostRequest:
+            title: CreatePost
             type: object
             properties:
                 sampleBodyField:
                     example: sample body field
                     type: string
                     description: sample body field
-        CreatePost_Response:
+            description: CreatePost
+        CreatePostResponse:
+            title: CreatePost
             type: object
             properties:
                 sampleBodyField:
                     example: sample body field
                     type: string
                     description: sample body field
-        CreateRole_Request:
+            description: CreatePost
+        CreateRoleRequest:
+            title: CreateRole
             type: object
             properties:
                 sampleBodyField:
                     example: sample body field
                     type: string
                     description: sample body field
-        CreateRole_Response:
+            description: CreateRole
+        CreateRoleResponse:
+            title: CreateRole
             type: object
             properties:
                 sampleBodyField:
                     example: sample body field
                     type: string
                     description: sample body field
+            description: CreateRole
         GoogleProtobufAny:
             type: object
             properties:
@@ -112,5 +120,5 @@ components:
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
 tags:
-    - name: Post
-    - name: RoleManager
+    - name: V1PostService
+    - name: V1RoleManagerService

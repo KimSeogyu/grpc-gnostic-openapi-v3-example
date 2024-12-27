@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package postpb.v1;
+
+import "gnostic/openapi/v3/annotations.proto";
+import "google/api/annotations.proto";
+
+service V1PostService {
+  rpc CreatePost(CreatePostRequest) returns (CreatePostResponse) {
+    option (google.api.http) = {
+      post: "/post"
+      body: "*"
+    };
+  }
+}
+
+message CreatePostRequest {
+  option (gnostic.openapi.v3.schema) = {
+    title: "CreatePost"
+    description: "CreatePost"
+  };
+
+  string sample_body_field = 1 [(gnostic.openapi.v3.property) = {
+    description: "sample body field"
+    nullable: false
+    example: {yaml: "sample body field"}
+  }];
+}
+
+message CreatePostResponse {
+  option (gnostic.openapi.v3.schema) = {
+    title: "CreatePost"
+    description: "CreatePost"
+  };
+
+  string sample_body_field = 1 [(gnostic.openapi.v3.property) = {
+    description: "sample body field"
+    nullable: false
+    example: {yaml: "sample body field"}
+  }];
+}
